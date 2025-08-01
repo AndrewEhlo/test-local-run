@@ -1,9 +1,6 @@
 param (
-    [bool]$installFrontend = $false, #$true
-    [bool]$usePostgres = $true,
     [string]$targetFolder = "VirtoLocal",
     [string]$postgresVersion = "16.9",
-    [string]$mssqlVersion = "2017-latest",
     [string]$elasticsearchVersion = "8.18.0",
     [string]$frontendRelease = "latest", # https://github.com/VirtoCommerce/vc-frontend/releases
     [string]$vcModulesBundle = "v10" # https://github.com/VirtoCommerce/vc-modules/tree/master/bundles
@@ -39,7 +36,6 @@ function New-RandomPassword {
 $envFileContent = @"
 PGSQL_VERSION=$postgresVersion
 STACK_VERSION=$elasticsearchVersion
-MSSQL_VERSION=$mssqlVersion
 DOCKER_PLATFORM_PORT=8090
 ES_PORT=9200
 KIBANA_PORT=5601
@@ -69,41 +65,26 @@ Invoke-WebRequest -Uri $stablePackagesJsonUrl -OutFile $stablePackagesJsonPath
 # download Dockerfile for the backend
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/backend/Dockerfile" -OutFile (Join-Path $backendDir "Dockerfile")
 
-if ($installFrontend) {
-    # download frontend files
-    $frontendDir = Join-Path $targetFolder "frontend"
-    New-Folder $frontendDir
-    if ($frontendRelease -eq "latest") {
-        $releaseInfo = Invoke-RestMethod -Uri "https://api.github.com/repos/VirtoCommerce/vc-frontend/releases/latest"
-    }
-    else {
-        $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/VirtoCommerce/vc-frontend/releases"
-        $releaseInfo = $releases | Where-Object { $_.tag_name -eq $frontendRelease }
-    }
-    $assets = $releaseInfo.assets
-    $zipName = $assets.name
-    Invoke-WebRequest -Uri $assets.browser_download_url -OutFile $frontendDir/$zipName
-    Expand-Archive -Path $frontendDir/$zipName -DestinationPath $frontendDir/artifact
-    Remove-Item -Path $frontendDir/$zipName
-
-    #download cofig files for the frontend
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/frontend/Dockerfile" -OutFile (Join-Path $frontendDir "Dockerfile")
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/frontend/nginx.conf" -OutFile (Join-Path $frontendDir "nginx.conf")
-
-
-    # download docker-compose file
-    if ($usePostgres) {
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/docker-compose_PGSQL_full.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
-    }
-    else {
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/docker-compose_MSSQL_full.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
-    }
+# download frontend files
+$frontendDir = Join-Path $targetFolder "frontend"
+New-Folder $frontendDir
+if ($frontendRelease -eq "latest") {
+    $releaseInfo = Invoke-RestMethod -Uri "https://api.github.com/repos/VirtoCommerce/vc-frontend/releases/latest"
 }
 else {
-    if ($usePostgres) {
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/docker-compose_PGSQL_nofrontend.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
-    }
-    else {
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/docker-compose_MSSQL_nofrontend.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
-    }
+    $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/VirtoCommerce/vc-frontend/releases"
+    $releaseInfo = $releases | Where-Object { $_.tag_name -eq $frontendRelease }
 }
+$assets = $releaseInfo.assets
+$zipName = $assets.name
+Invoke-WebRequest -Uri $assets.browser_download_url -OutFile $frontendDir/$zipName
+Expand-Archive -Path $frontendDir/$zipName -DestinationPath $frontendDir/artifact
+Remove-Item -Path $frontendDir/$zipName
+
+#download cofig files for the frontend
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/frontend/Dockerfile" -OutFile (Join-Path $frontendDir "Dockerfile")
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/frontend/nginx.conf" -OutFile (Join-Path $frontendDir "nginx.conf")
+
+
+# download docker-compose file
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/docker-compose.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
