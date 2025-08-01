@@ -54,10 +54,10 @@ Set-Content -Path $envFile -Value $envFileContent
 # donwload scripts
 $scriptsDir = Join-Path $targetFolder "scripts"
 New-Folder $scriptsDir
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/VirtoCommerce/vc-platform/refs/heads/master/docker/scripts/check-installed-modules.ps1" -OutFile (Join-Path $scriptsDir "check-installed-modules.ps1")
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/VirtoCommerce/vc-platform/refs/heads/master/docker/scripts/setup-sampledata.ps1" -OutFile (Join-Path $scriptsDir "setup-sampledata.ps1")
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/VirtoCommerce/vc-platform/refs/heads/master/docker/scripts/wait-for-it.sh" -OutFile (Join-Path $scriptsDir "wait-for-it.sh")
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/VirtoCommerce/vc-platform/refs/heads/master/docker/scripts/watch-url-up.ps1" -OutFile (Join-Path $scriptsDir "watch-url-up.ps1")
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/scripts/check-installed-modules.ps1" -OutFile (Join-Path $scriptsDir "check-installed-modules.ps1")
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/scripts/setup-sampledata.ps1" -OutFile (Join-Path $scriptsDir "setup-sampledata.ps1")
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/scripts/wait-for-it.sh" -OutFile (Join-Path $scriptsDir "wait-for-it.sh")
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/scripts/watch-url-up.ps1" -OutFile (Join-Path $scriptsDir "watch-url-up.ps1")
 
 # download packages.json file for the backend
 $backendDir = Join-Path $targetFolder "backend"
@@ -67,7 +67,7 @@ $stablePackagesJsonPath = Join-Path $backendDir "stable-packages.json"
 Invoke-WebRequest -Uri $stablePackagesJsonUrl -OutFile $stablePackagesJsonPath
 
 # download Dockerfile for the backend
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/VirtoCommerce/vc-platform/refs/heads/master/docker/Dockerfile" -OutFile (Join-Path $backendDir "Dockerfile")
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/backend/Dockerfile" -OutFile (Join-Path $backendDir "Dockerfile")
 
 if ($installFrontend) {
     # download frontend files
@@ -86,24 +86,24 @@ if ($installFrontend) {
     Expand-Archive -Path $frontendDir/$zipName -DestinationPath $frontendDir/artifact
     Remove-Item -Path $frontendDir/$zipName
 
-    #download cofig files for teh frontend
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/VirtoCommerce/vc-platform/refs/heads/master/docker/Dockerfile" -OutFile (Join-Path $frontendDir "Dockerfile")
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/VirtoCommerce/vc-platform/refs/heads/master/docker/nginx.conf" -OutFile (Join-Path $frontendDir "nginx.conf")
+    #download cofig files for the frontend
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/frontend/Dockerfile" -OutFile (Join-Path $frontendDir "Dockerfile")
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/frontend/nginx.conf" -OutFile (Join-Path $frontendDir "nginx.conf")
 
 
     # download docker-compose file
     if ($usePostgres) {
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/VirtoCommerce/vc-platform/refs/heads/master/docker/docker-compose_PGSQL_full.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/docker-compose_PGSQL_full.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
     }
     else {
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/VirtoCommerce/vc-platform/refs/heads/master/docker/docker-compose_MSSQL_full.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/docker-compose_MSSQL_full.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
     }
 }
 else {
     if ($usePostgres) {
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/VirtoCommerce/vc-platform/refs/heads/master/docker/docker-compose_PGSQL_nofrontend.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/docker-compose_PGSQL_nofrontend.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
     }
     else {
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/VirtoCommerce/vc-platform/refs/heads/master/docker/docker-compose_MSSQL_nofrontend.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/docker-compose_MSSQL_nofrontend.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
     }
 }
