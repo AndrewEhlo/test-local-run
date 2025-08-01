@@ -6,15 +6,11 @@ Run Virtocommerce backend, Virtocommerce frontend, database server, Redis, Elast
 > This script is for local testing only. Do not use it in production!
 > !TODO! For production installations refer to the official documentation for [Elasticsearch](https://www.elastic.co/downloads/elasticsearch) and [Kibana](https://www.elastic.co/downloads/kibana).
 
-## 🌟 Options
-
-- The script allows to choose **MSSQL** or **PostgreSQL**
-- The solution can be installed as a **backend only** or **backend + frontend** combination
 
 ## 💻 System requirements
 
 - ~5 GB of available disk space
-- [Git client](https://git-scm.com/downloads/guis)
+- [vc-build](https://github.com/VirtoCommerce/vc-build)
 - [Docker](https://www.docker.com/)
 - Works on Windows
 - !TODO! On Linux and MacOS it works using pwsh [Install PowerShell on Linux](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-linux), [Installing PowerShell on macOS](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-macos)
@@ -23,13 +19,11 @@ Run Virtocommerce backend, Virtocommerce frontend, database server, Redis, Elast
 
 ### Setup
 
-Clone the `!TODO!` repository using any Git client:
+Run the script to create a local folder `VirtoLocal` containing all necessary files:
 
 ```pwsh
-git clone https://!TODO!
+!TODO!Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/VirtoLocal_create_local_files.ps1" -UseBasicParsing).Content
 ```
-
-This repository contains all necessary files to run a VirtoCommerce solution locally:
 
 - `docker-compose*.yml`: Docker Compose configurations for VirtoCommerce solution
 - `backend` folder: Dockerfile for the backend component

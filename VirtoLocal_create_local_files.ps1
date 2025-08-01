@@ -1,9 +1,7 @@
 param (
     [string]$targetFolder = "VirtoLocal",
     [string]$postgresVersion = "16.9",
-    [string]$elasticsearchVersion = "8.18.0",
-    [string]$frontendRelease = "latest", # https://github.com/VirtoCommerce/vc-frontend/releases
-    [string]$vcModulesBundle = "v10" # https://github.com/VirtoCommerce/vc-modules/tree/master/bundles
+    [string]$elasticsearchVersion = "8.18.0"
 )
 function New-Folder($folder) {
     try {
@@ -16,13 +14,6 @@ function New-Folder($folder) {
     }
 }
 
-# create target folder
-New-Folder $targetFolder
-
-# create .env file
-$envFile = Join-Path $targetFolder ".env"
-
-# Function to generate random password
 function New-RandomPassword {
     param([int]$Length = 12)
     $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*"
@@ -32,6 +23,12 @@ function New-RandomPassword {
     }
     return $password
 }
+
+# create target folder
+New-Folder $targetFolder
+
+# create .env file
+$envFile = Join-Path $targetFolder ".env"
 
 $envFileContent = @"
 PGSQL_VERSION=$postgresVersion
@@ -55,33 +52,10 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/scripts/wait-for-it.sh" -OutFile (Join-Path $scriptsDir "wait-for-it.sh")
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/scripts/watch-url-up.ps1" -OutFile (Join-Path $scriptsDir "watch-url-up.ps1")
 
-# download packages.json file for the backend
-$backendDir = Join-Path $targetFolder "backend"
-New-Folder $backendDir
-$stablePackagesJsonUrl = "https://raw.githubusercontent.com/VirtoCommerce/vc-modules/refs/heads/master/bundles/$vcModulesBundle/package.json"
-$stablePackagesJsonPath = Join-Path $backendDir "stable-packages.json"
-Invoke-WebRequest -Uri $stablePackagesJsonUrl -OutFile $stablePackagesJsonPath
-
 # download Dockerfile for the backend
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/backend/Dockerfile" -OutFile (Join-Path $backendDir "Dockerfile")
 
-# download frontend files
-$frontendDir = Join-Path $targetFolder "frontend"
-New-Folder $frontendDir
-if ($frontendRelease -eq "latest") {
-    $releaseInfo = Invoke-RestMethod -Uri "https://api.github.com/repos/VirtoCommerce/vc-frontend/releases/latest"
-}
-else {
-    $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/VirtoCommerce/vc-frontend/releases"
-    $releaseInfo = $releases | Where-Object { $_.tag_name -eq $frontendRelease }
-}
-$assets = $releaseInfo.assets
-$zipName = $assets.name
-Invoke-WebRequest -Uri $assets.browser_download_url -OutFile $frontendDir/$zipName
-Expand-Archive -Path $frontendDir/$zipName -DestinationPath $frontendDir/artifact
-Remove-Item -Path $frontendDir/$zipName
-
-#download cofig files for the frontend
+#download config files for the frontend
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/frontend/Dockerfile" -OutFile (Join-Path $frontendDir "Dockerfile")
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/frontend/nginx.conf" -OutFile (Join-Path $frontendDir "nginx.conf")
 
