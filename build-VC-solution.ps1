@@ -38,44 +38,44 @@ Write-Host "✓ Backend built successfully" -ForegroundColor Green
 
 # build backend Docker image
 Write-Host "Building backend Docker image..." -ForegroundColor Yellow
-if ($IsLinux) {
-    $groupname = "docker"
-    $currentUser = $env:USER
+# if ($IsLinux) {
+#     $groupname = "docker"
+#     $currentUser = $env:USER
     
-    # Use PowerShell to check group existence
-    $groupExists = bash -c "getent group '$groupname'" 2>$null
-    if (-not $groupExists) {
-        Write-Host "Group $groupname does not exist, creating it..." -ForegroundColor Yellow
-        sudo groupadd $groupname
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "Error: Failed to create group $groupname" -ForegroundColor Red
-            exit 1
-        }
-    } else {
-        Write-Host "Group $groupname exists" -ForegroundColor Green
-    }
+#     # Use PowerShell to check group existence
+#     $groupExists = bash -c "getent group '$groupname'" 2>$null
+#     if (-not $groupExists) {
+#         Write-Host "Group $groupname does not exist, creating it..." -ForegroundColor Yellow
+#         sudo groupadd $groupname
+#         if ($LASTEXITCODE -ne 0) {
+#             Write-Host "Error: Failed to create group $groupname" -ForegroundColor Red
+#             exit 1
+#         }
+#     } else {
+#         Write-Host "Group $groupname exists" -ForegroundColor Green
+#     }
     
-    # Check if user is in group
-    $userGroups = bash -c "groups $currentUser"
-    if ($userGroups -notmatch $groupname) {
-        Write-Host "Adding user $currentUser to group $groupname..." -ForegroundColor Yellow
-        sudo usermod -aG $groupname $currentUser
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "Error: Failed to add user to group $groupname" -ForegroundColor Red
-            exit 1
-        }
-        Write-Host "User added to group. Please log out and log in again for changes to take effect." -ForegroundColor Yellow
-        Write-Host "Or run: newgrp $groupname" -ForegroundColor Yellow
-        exit 1
-    } else {
-        Write-Host "User $USER is already a member of group $groupname" -ForegroundColor Green
-    }
+#     # Check if user is in group
+#     $userGroups = bash -c "groups $currentUser"
+#     if ($userGroups -notmatch $groupname) {
+#         Write-Host "Adding user $currentUser to group $groupname..." -ForegroundColor Yellow
+#         sudo usermod -aG $groupname $currentUser
+#         if ($LASTEXITCODE -ne 0) {
+#             Write-Host "Error: Failed to add user to group $groupname" -ForegroundColor Red
+#             exit 1
+#         }
+#         Write-Host "User added to group. Please log out and log in again for changes to take effect." -ForegroundColor Yellow
+#         Write-Host "Or run: newgrp $groupname" -ForegroundColor Yellow
+#         exit 1
+#     } else {
+#         Write-Host "User $USER is already a member of group $groupname" -ForegroundColor Green
+#     }
     
-    docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
-}
-else {
-    docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
-}
+#     docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
+# }
+# else {
+docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
+# }
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: Failed to build backend Docker image" -ForegroundColor Red
     Write-Host "Build command failed with exit code: $LASTEXITCODE" -ForegroundColor Red
