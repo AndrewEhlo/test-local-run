@@ -20,6 +20,12 @@ vc-build install --package-manifest-path $stablePackagesJsonPath `
 
 # build backend Docker image
 docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Error: Failed to build backend Docker image" -ForegroundColor Red
+    Write-Host "Build command failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+    Write-Host "Build output: $buildResult" -ForegroundColor Red
+    exit 1
+}
 
 #remove publish folder
 if (Test-Path -Path ./backend/publish) {
