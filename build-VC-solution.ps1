@@ -11,28 +11,39 @@ $stablePackagesJsonUrl = "https://raw.githubusercontent.com/VirtoCommerce/vc-mod
 $stablePackagesJsonPath = Join-Path $backendDir "stable-packages.json"
 Invoke-WebRequest -Uri $stablePackagesJsonUrl -OutFile $stablePackagesJsonPath
 
-build backend
+# build backend
+Write-Host "Building backend..." -ForegroundColor Yellow
 vc-build install --package-manifest-path $stablePackagesJsonPath `
     --probing-path $backendDir/publish/platform/app_data/modules `
     --discovery-path $backendDir/publish/modules `
     --root $backendDir/publish/platform `
     --skip-dependency-solving
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Error: Failed to build backend" -ForegroundColor Red
+    Write-Host "Build command failed with exit code: $LASTEXITCODE" -ForegroundColor Red
+    exit 1
+}
+Write-Host "✓ Backend built successfully" -ForegroundColor Green
 
 # build backend Docker image
+Write-Host "Building backend Docker image..." -ForegroundColor Yellow
 docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: Failed to build backend Docker image" -ForegroundColor Red
     Write-Host "Build command failed with exit code: $LASTEXITCODE" -ForegroundColor Red
-    Write-Host "Build output: $buildResult" -ForegroundColor Red
     exit 1
 }
+Write-Host "✓ Backend Docker image built successfully" -ForegroundColor Green
 
 #remove publish folder
-if (Test-Path -Path ./backend/publish) {
-    Remove-Item -Recurse -Force ./backend/publish
+Write-Host "Removing publish folder..." -ForegroundColor Yellow
+if (Test-Path -Path $backendDir/publish) {
+    Remove-Item -Recurse -Force $backendDir/publish
 }
+Write-Host "✓ Publish folder removed" -ForegroundColor Green
 
 # download and extract frontend files
+Write-Host "Downloading and extracting frontend files..." -ForegroundColor Yellow
 $frontendDir = Join-Path $targetFolder "frontend"
 New-Folder $frontendDir
 if ($frontendRelease -eq "latest") {
@@ -47,14 +58,14 @@ $zipName = $assets.name
 Invoke-WebRequest -Uri $assets.browser_download_url -OutFile $frontendDir/$zipName
 Expand-Archive -Path $frontendDir/$zipName -DestinationPath $frontendDir/artifact
 Remove-Item -Path $frontendDir/$zipName
+Write-Host "✓ Frontend files downloaded and extracted" -ForegroundColor Green
 
 # build frontend Docker image
 Write-Host "Building frontend Docker image..." -ForegroundColor Yellow
-$buildResult = docker build -t "vc-frontend:local-latest" -f $frontendDir/Dockerfile $frontendDir
+docker build -t "vc-frontend:local-latest" -f $frontendDir/Dockerfile $frontendDir
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: Failed to build frontend Docker image" -ForegroundColor Red
     Write-Host "Build command failed with exit code: $LASTEXITCODE" -ForegroundColor Red
-    Write-Host "Build output: $buildResult" -ForegroundColor Red
     exit 1
 }
 Write-Host "✓ Frontend Docker image built successfully" -ForegroundColor Green
