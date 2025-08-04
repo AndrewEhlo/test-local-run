@@ -29,7 +29,8 @@ Run the script to create a local folder `VirtoLocal` containing all necessary fi
 - `backend` folder: Dockerfile for the backend component
 - `frontend` folder: Dockerfile for the frontend component
 - `scripts` folder: Scripts used by the main script
-- `VirtoLocal.ps1`: Script to start and stop a VirtoCommerce solution
+- `build-VC-solution.ps1`: Script to build docker images for backend and frontend
+- `start-VC-solution.ps1`: 
 
 ### Select the versions to install
 

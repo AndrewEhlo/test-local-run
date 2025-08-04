@@ -8,7 +8,8 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY ./publish /opt/virtocommerce/platform
+# COPY publish /opt/virtocommerce/platform
+COPY publish /opt/virtocommerce
 
 COPY ./wait-for-it.sh /wait-for-it.sh
 RUN chmod +x wait-for-it.sh

@@ -33,13 +33,16 @@ $envFile = Join-Path $targetFolder ".env"
 $envFileContent = @"
 PGSQL_VERSION=$postgresVersion
 STACK_VERSION=$elasticsearchVersion
-DOCKER_PLATFORM_PORT=8090
+PLATFORM_PORT=8090
 ES_PORT=9200
 KIBANA_PORT=5601
 DB_PASSWORD=$(New-RandomPassword)
 REDIS_PASSWORD=$(New-RandomPassword)
 ELASTIC_PASSWORD=$(New-RandomPassword)
 KIBANA_PASSWORD=$(New-RandomPassword)
+PGSQL_PORT=5432
+REDIS_PORT=6379
+FRONTEND_PORT=80
 "@
 Set-Content -Path $envFile -Value $envFileContent
 
