@@ -11,20 +11,20 @@ $stablePackagesJsonUrl = "https://raw.githubusercontent.com/VirtoCommerce/vc-mod
 $stablePackagesJsonPath = Join-Path $backendDir "stable-packages.json"
 Invoke-WebRequest -Uri $stablePackagesJsonUrl -OutFile $stablePackagesJsonPath
 
-# build backend
-# vc-build install --package-manifest-path $stablePackagesJsonPath `
-#     --probing-path $backendDir/publish/platform/app_data/modules `
-#     --discovery-path $backendDir/publish/modules `
-#     --root $backendDir/publish/platform `
-#     --skip-dependency-solving
+build backend
+vc-build install --package-manifest-path $stablePackagesJsonPath `
+    --probing-path $backendDir/publish/platform/app_data/modules `
+    --discovery-path $backendDir/publish/modules `
+    --root $backendDir/publish/platform `
+    --skip-dependency-solving
 
 # build backend Docker image
 docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
 
-# #remove publish folder
-# if (Test-Path -Path ./backend/publish) {
-#     Remove-Item -Recurse -Force ./backend/publish
-# }
+#remove publish folder
+if (Test-Path -Path ./backend/publish) {
+    Remove-Item -Recurse -Force ./backend/publish
+}
 
 # download and extract frontend files
 $frontendDir = Join-Path $targetFolder "frontend"
