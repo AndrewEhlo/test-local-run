@@ -16,7 +16,7 @@ function New-Folder($folder) {
 
 function New-RandomPassword {
     param([int]$Length = 12)
-    $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*"
+    $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@$%^&*"
     $password = ""
     for ($i = 0; $i -lt $Length; $i++) {
         $password += $chars[(Get-Random -Maximum $chars.Length)]
