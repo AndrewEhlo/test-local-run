@@ -40,23 +40,26 @@ Write-Host "✓ Backend built successfully" -ForegroundColor Green
 Write-Host "Building backend Docker image..." -ForegroundColor Yellow
 if ($IsLinux) {
     $groupname = "docker"
+    $currentUser = $env:USER
     
-    # Check if group exists
-    $groupExists = bash -c "getent group '$groupname' >/dev/null 2>&1; echo \$?"
-    if ($groupExists -ne "0") {
+    # Use PowerShell to check group existence
+    $groupExists = bash -c "getent group '$groupname'" 2>$null
+    if (-not $groupExists) {
         Write-Host "Group $groupname does not exist, creating it..." -ForegroundColor Yellow
         sudo groupadd $groupname
         if ($LASTEXITCODE -ne 0) {
             Write-Host "Error: Failed to create group $groupname" -ForegroundColor Red
             exit 1
         }
+    } else {
+        Write-Host "Group $groupname exists" -ForegroundColor Green
     }
     
-    # Check if user is already in the group
-    $userInGroup = bash -c "groups $USER | grep -q '$groupname'; echo \$?"
-    if ($userInGroup -ne "0") {
-        Write-Host "Adding user $USER to group $groupname..." -ForegroundColor Yellow
-        sudo usermod -aG $groupname $USER
+    # Check if user is in group
+    $userGroups = bash -c "groups $currentUser"
+    if ($userGroups -notmatch $groupname) {
+        Write-Host "Adding user $currentUser to group $groupname..." -ForegroundColor Yellow
+        sudo usermod -aG $groupname $currentUser
         if ($LASTEXITCODE -ne 0) {
             Write-Host "Error: Failed to add user to group $groupname" -ForegroundColor Red
             exit 1
