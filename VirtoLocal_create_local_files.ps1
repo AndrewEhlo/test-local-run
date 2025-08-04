@@ -28,6 +28,7 @@ function New-RandomPassword {
 New-Folder $targetFolder
 
 # create .env file
+Write-Host "Creating .env file..." -ForegroundColor Yellow
 $envFile = Join-Path $targetFolder ".env"
 
 $envFileContent = @"
@@ -45,13 +46,18 @@ REDIS_PORT=6379
 FRONTEND_PORT=80
 "@
 Set-Content -Path $envFile -Value $envFileContent
+Write-Host "✓ .env file created" -ForegroundColor Green
 
-# download files
+# download management scripts
+Write-Host "Downloading management scripts..." -ForegroundColor Yellow
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/build-VC-solution.ps1" -OutFile (Join-Path $targetFolder "build-VC-solution.ps1")
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/start-VC-solution.ps1" -OutFile (Join-Path $targetFolder "start-VC-solution.ps1")
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/stop-VC-solution.ps1" -OutFile (Join-Path $targetFolder "stop-VC-solution.ps1")
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/remove-VC-solution.ps1" -OutFile (Join-Path $targetFolder "remove-VC-solution.ps1")
+Write-Host "✓ Management scripts downloaded" -ForegroundColor Green
+
 # donwload scripts-helpers
+Write-Host "Downloading scripts-helpers..." -ForegroundColor Yellow
 $scriptsDir = Join-Path $targetFolder "scripts"
 $backendDir = Join-Path $targetFolder "backend"
 $frontendDir = Join-Path $targetFolder "frontend"
@@ -59,17 +65,25 @@ New-Folder $scriptsDir
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/scripts/check-installed-modules.ps1" -OutFile (Join-Path $scriptsDir "check-installed-modules.ps1")
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/scripts/setup-sampledata.ps1" -OutFile (Join-Path $scriptsDir "setup-sampledata.ps1")
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/scripts/watch-url-up.ps1" -OutFile (Join-Path $scriptsDir "watch-url-up.ps1")
+Write-Host "✓ Scripts-helpers downloaded" -ForegroundColor Green
 
-# download Dockerfile for the backend
+# download config files for the backend
+Write-Host "Downloading config files for the backend..." -ForegroundColor Yellow
 New-Folder $backendDir
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/backend/Dockerfile" -OutFile (Join-Path $backendDir "Dockerfile")
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/scripts/wait-for-it.sh" -OutFile (Join-Path $backendDir "wait-for-it.sh")
+Write-Host "✓ Config files for the backend downloaded" -ForegroundColor Green
 
 #download config files for the frontend
+Write-Host "Downloading config files for the frontend..." -ForegroundColor Yellow
 New-Folder $frontendDir
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/frontend/Dockerfile" -OutFile (Join-Path $frontendDir "Dockerfile")
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/frontend/nginx.conf" -OutFile (Join-Path $frontendDir "nginx.conf")
-
+Write-Host "✓ Config files for the frontend downloaded" -ForegroundColor Green
 
 # download docker-compose file
+Write-Host "Downloading docker-compose file..." -ForegroundColor Yellow
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/docker-compose.yml" -OutFile (Join-Path $targetFolder "docker-compose.yml")
+Write-Host "✓ docker-compose file downloaded" -ForegroundColor Green
+
+Write-Host "Done" -ForegroundColor Green
