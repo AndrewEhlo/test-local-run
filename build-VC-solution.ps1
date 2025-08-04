@@ -110,12 +110,12 @@ Write-Host "✓ Frontend files downloaded and extracted" -ForegroundColor Green
 
 # build frontend Docker image
 Write-Host "Building frontend Docker image..." -ForegroundColor Yellow
-if ($IsLinux) {
-    sudo docker build -t "vc-frontend:local-latest" -f $frontendDir/Dockerfile $frontendDir
-}
-else {
-    docker build -t "vc-frontend:local-latest" -f $frontendDir/Dockerfile $frontendDir
-}
+# if ($IsLinux) {
+#     sudo docker build -t "vc-frontend:local-latest" -f $frontendDir/Dockerfile $frontendDir
+# }
+# else {
+docker build -t "vc-frontend:local-latest" -f $frontendDir/Dockerfile $frontendDir
+# }
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: Failed to build frontend Docker image" -ForegroundColor Red
     Write-Host "Build command failed with exit code: $LASTEXITCODE" -ForegroundColor Red
