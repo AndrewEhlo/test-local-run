@@ -10,7 +10,7 @@ Run Virtocommerce backend, Virtocommerce frontend, database server, Redis, Elast
 ## 💻 System requirements
 
 - ~6 GB of available disk space
-- [.NET Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0): Required only for `vc-build` installation
+- [.NET SDK](https://dotnet.microsoft.com/en-us/download/dotnet): Required only for `vc-build` installation
 - [vc-build](https://github.com/VirtoCommerce/vc-build): command to install `dotnet tool install VirtoCommerce.GlobalTool -g`
 - [Docker](https://www.docker.com/)
 - Works on Windows
