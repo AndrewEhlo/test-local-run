@@ -4,6 +4,17 @@ param (
     [string]$vcModulesBundle = "v10" # https://github.com/VirtoCommerce/vc-modules/tree/master/bundles
 )
 
+function New-Folder($folder) {
+    try {
+        $folder = Resolve-Path $folder -ErrorAction Stop
+        Write-Host "Folder exists: $folder" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "Target folder '$folder' does not exist, creating it..." -ForegroundColor Yellow
+        New-Item $folder -ItemType Directory
+    }
+}
+
 # download packages.json file for the backend
 $backendDir = Join-Path $targetFolder "backend"
 New-Folder $backendDir

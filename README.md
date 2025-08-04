@@ -10,7 +10,8 @@ Run Virtocommerce backend, Virtocommerce frontend, database server, Redis, Elast
 ## 💻 System requirements
 
 - ~6 GB of available disk space
-- [vc-build](https://github.com/VirtoCommerce/vc-build)
+- [.NET Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/8.0): Required only for `vc-build` installation
+- [vc-build](https://github.com/VirtoCommerce/vc-build): command to install `dotnet tool install VirtoCommerce.GlobalTool -g`
 - [Docker](https://www.docker.com/)
 - Works on Windows
 - !TODO! On Linux and MacOS it works using pwsh [Install PowerShell on Linux](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-linux), [Installing PowerShell on macOS](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-macos)
