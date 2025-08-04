@@ -39,21 +39,35 @@ Write-Host "✓ Backend built successfully" -ForegroundColor Green
 # build backend Docker image
 Write-Host "Building backend Docker image..." -ForegroundColor Yellow
 if ($IsLinux) {
-    # Linux/Mac check
     $groupname = "docker"
+    
+    # Check if group exists
     $groupExists = bash -c "getent group '$groupname' >/dev/null 2>&1; echo \$?"
-    if ($groupExists -eq "0") {
-        Write-Host "Group $groupname exists" -ForegroundColor Green
-    } else {
-        Write-Host "Group $groupname does not exist" -ForegroundColor Yellow
-        Write-Host "Creating the group $groupname" -ForegroundColor Yellow
+    if ($groupExists -ne "0") {
+        Write-Host "Group $groupname does not exist, creating it..." -ForegroundColor Yellow
         sudo groupadd $groupname
-        Write-Host "Adding the user to the group $groupname" -ForegroundColor Yellow
-        sudo usermod -aG $groupname $USER
-        Write-Host "Please log out and log in again" -ForegroundColor Yellow
-        Write-Host "sudo su - $USER" -ForegroundColor Yellow
-        exit 1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Error: Failed to create group $groupname" -ForegroundColor Red
+            exit 1
+        }
     }
+    
+    # Check if user is already in the group
+    $userInGroup = bash -c "groups $USER | grep -q '$groupname'; echo \$?"
+    if ($userInGroup -ne "0") {
+        Write-Host "Adding user $USER to group $groupname..." -ForegroundColor Yellow
+        sudo usermod -aG $groupname $USER
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Error: Failed to add user to group $groupname" -ForegroundColor Red
+            exit 1
+        }
+        Write-Host "User added to group. Please log out and log in again for changes to take effect." -ForegroundColor Yellow
+        Write-Host "Or run: newgrp $groupname" -ForegroundColor Yellow
+        exit 1
+    } else {
+        Write-Host "User $USER is already a member of group $groupname" -ForegroundColor Green
+    }
+    
     docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
 }
 else {
