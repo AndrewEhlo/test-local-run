@@ -38,44 +38,7 @@ Write-Host "✓ Backend built successfully" -ForegroundColor Green
 
 # build backend Docker image
 Write-Host "Building backend Docker image..." -ForegroundColor Yellow
-# if ($IsLinux) {
-#     $groupname = "docker"
-#     $currentUser = $env:USER
-    
-#     # Use PowerShell to check group existence
-#     $groupExists = bash -c "getent group '$groupname'" 2>$null
-#     if (-not $groupExists) {
-#         Write-Host "Group $groupname does not exist, creating it..." -ForegroundColor Yellow
-#         sudo groupadd $groupname
-#         if ($LASTEXITCODE -ne 0) {
-#             Write-Host "Error: Failed to create group $groupname" -ForegroundColor Red
-#             exit 1
-#         }
-#     } else {
-#         Write-Host "Group $groupname exists" -ForegroundColor Green
-#     }
-    
-#     # Check if user is in group
-#     $userGroups = bash -c "groups $currentUser"
-#     if ($userGroups -notmatch $groupname) {
-#         Write-Host "Adding user $currentUser to group $groupname..." -ForegroundColor Yellow
-#         sudo usermod -aG $groupname $currentUser
-#         if ($LASTEXITCODE -ne 0) {
-#             Write-Host "Error: Failed to add user to group $groupname" -ForegroundColor Red
-#             exit 1
-#         }
-#         Write-Host "User added to group. Please log out and log in again for changes to take effect." -ForegroundColor Yellow
-#         Write-Host "Or run: newgrp $groupname" -ForegroundColor Yellow
-#         exit 1
-#     } else {
-#         Write-Host "User $USER is already a member of group $groupname" -ForegroundColor Green
-#     }
-    
-#     docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
-# }
-# else {
 docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
-# }
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: Failed to build backend Docker image" -ForegroundColor Red
     Write-Host "Build command failed with exit code: $LASTEXITCODE" -ForegroundColor Red
@@ -83,12 +46,12 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "✓ Backend Docker image built successfully" -ForegroundColor Green
 
-#remove publish folder
-Write-Host "Removing publish folder..." -ForegroundColor Yellow
-if (Test-Path -Path $backendDir/publish) {
-    Remove-Item -Recurse -Force $backendDir/publish
-}
-Write-Host "✓ Publish folder removed" -ForegroundColor Green
+# #remove publish folder
+# Write-Host "Removing publish folder..." -ForegroundColor Yellow
+# if (Test-Path -Path $backendDir/publish) {
+#     Remove-Item -Recurse -Force $backendDir/publish
+# }
+# Write-Host "✓ Publish folder removed" -ForegroundColor Green
 
 # download and extract frontend files
 Write-Host "Downloading and extracting frontend files..." -ForegroundColor Yellow
@@ -110,12 +73,7 @@ Write-Host "✓ Frontend files downloaded and extracted" -ForegroundColor Green
 
 # build frontend Docker image
 Write-Host "Building frontend Docker image..." -ForegroundColor Yellow
-# if ($IsLinux) {
-#     sudo docker build -t "vc-frontend:local-latest" -f $frontendDir/Dockerfile $frontendDir
-# }
-# else {
 docker build -t "vc-frontend:local-latest" -f $frontendDir/Dockerfile $frontendDir
-# }
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: Failed to build frontend Docker image" -ForegroundColor Red
     Write-Host "Build command failed with exit code: $LASTEXITCODE" -ForegroundColor Red
