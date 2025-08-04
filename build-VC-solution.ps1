@@ -38,7 +38,12 @@ Write-Host "✓ Backend built successfully" -ForegroundColor Green
 
 # build backend Docker image
 Write-Host "Building backend Docker image..." -ForegroundColor Yellow
-docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
+if ($IsLinux) {
+    sudo docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
+}
+else {
+    docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
+}
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: Failed to build backend Docker image" -ForegroundColor Red
     Write-Host "Build command failed with exit code: $LASTEXITCODE" -ForegroundColor Red
@@ -73,7 +78,12 @@ Write-Host "✓ Frontend files downloaded and extracted" -ForegroundColor Green
 
 # build frontend Docker image
 Write-Host "Building frontend Docker image..." -ForegroundColor Yellow
-docker build -t "vc-frontend:local-latest" -f $frontendDir/Dockerfile $frontendDir
+if ($IsLinux) {
+    sudo docker build -t "vc-frontend:local-latest" -f $frontendDir/Dockerfile $frontendDir
+}
+else {
+    docker build -t "vc-frontend:local-latest" -f $frontendDir/Dockerfile $frontendDir
+}
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: Failed to build frontend Docker image" -ForegroundColor Red
     Write-Host "Build command failed with exit code: $LASTEXITCODE" -ForegroundColor Red
