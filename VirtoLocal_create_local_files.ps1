@@ -50,7 +50,7 @@ Set-Content -Path $envFile -Value $envFileContent
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/build-VC-solution.ps1" -OutFile (Join-Path $targetFolder "build-VC-solution.ps1")
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/start-VC-solution.ps1" -OutFile (Join-Path $targetFolder "start-VC-solution.ps1")
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/stop-VC-solution.ps1" -OutFile (Join-Path $targetFolder "stop-VC-solution.ps1")
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/restart-VC-solution.ps1" -OutFile (Join-Path $targetFolder "restart-VC-solution.ps1")
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/AndrewEhlo/test-local-run/refs/heads/main/remove-VC-solution.ps1" -OutFile (Join-Path $targetFolder "remove-VC-solution.ps1")
 # donwload scripts-helpers
 $scriptsDir = Join-Path $targetFolder "scripts"
 $backendDir = Join-Path $targetFolder "backend"
