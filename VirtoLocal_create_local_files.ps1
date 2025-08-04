@@ -10,7 +10,7 @@ function New-Folder($folder) {
     }
     catch {
         Write-Host "Target folder '$folder' does not exist, creating it..." -ForegroundColor Yellow
-        New-Item $folder -ItemType Directory
+        New-Item $folder -ItemType Directory | Out-Null
     }
 }
 
