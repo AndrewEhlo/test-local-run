@@ -39,7 +39,22 @@ Write-Host "✓ Backend built successfully" -ForegroundColor Green
 # build backend Docker image
 Write-Host "Building backend Docker image..." -ForegroundColor Yellow
 if ($IsLinux) {
-    sudo docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
+    # Linux/Mac check
+    $groupname = "docker"
+    $groupExists = bash -c "getent group '$groupname' >/dev/null 2>&1; echo \$?"
+    if ($groupExists -eq "0") {
+        Write-Host "Group $groupname exists" -ForegroundColor Green
+    } else {
+        Write-Host "Group $groupname does not exist" -ForegroundColor Yellow
+        Write-Host "Creating the group $groupname" -ForegroundColor Yellow
+        sudo groupadd $groupname
+        Write-Host "Adding the user to the group $groupname" -ForegroundColor Yellow
+        sudo usermod -aG $groupname $USER
+        Write-Host "Please log out and log in again" -ForegroundColor Yellow
+        Write-Host "sudo su - $USER" -ForegroundColor Yellow
+        exit 1
+    }
+    docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
 }
 else {
     docker build --no-cache -t "vc-platform:local-latest" -f $backendDir/Dockerfile $backendDir
