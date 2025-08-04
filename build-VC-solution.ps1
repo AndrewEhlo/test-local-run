@@ -25,9 +25,9 @@ Invoke-WebRequest -Uri $stablePackagesJsonUrl -OutFile $stablePackagesJsonPath
 # build backend
 Write-Host "Building backend..." -ForegroundColor Yellow
 vc-build install --package-manifest-path $stablePackagesJsonPath `
-    --probing-path $backendDir/publish/platform/app_data/modules `
+    --probing-path $backendDir/publish/app_data/modules `
     --discovery-path $backendDir/publish/modules `
-    --root $backendDir/publish/platform `
+    --root $backendDir/publish `
     --skip-dependency-solving
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: Failed to build backend" -ForegroundColor Red
